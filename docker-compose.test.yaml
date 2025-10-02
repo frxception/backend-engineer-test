@@ -1,0 +1,59 @@
+services:
+  db-test:
+    image: postgres:15
+    container_name: blockchain-indexer-db-test
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
+      POSTGRES_DB: test_mydatabase
+    tmpfs:
+      # Use tmpfs for faster test execution
+      - /var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-myuser}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - blockchain-network-test
+
+  api-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blockchain-indexer-api-test
+    depends_on:
+      db-test:
+        condition: service_healthy
+    environment:
+      # Database Configuration
+      DATABASE_URL: postgres://${POSTGRES_USER:-myuser}:${POSTGRES_PASSWORD:-mypassword}@db-test:5432/test_mydatabase
+      DATABASE_POOL_MAX: 10
+      DATABASE_IDLE_TIMEOUT_MS: 10000
+      DATABASE_CONNECTION_TIMEOUT_MS: 2000
+
+      # Server Configuration
+      NODE_ENV: test
+      PORT: 3001
+      HOST: 0.0.0.0
+
+      # CORS Configuration
+      ALLOWED_ORIGINS: "*"
+
+      # Rate Limiting (very relaxed for tests)
+      RATE_LIMIT_MAX: 10000
+      RATE_LIMIT_WINDOW_MS: 60000
+
+      # Blockchain Configuration
+      MAX_ROLLBACK_BLOCKS: 100
+    ports:
+      - "3001:3001"
+    networks:
+      - blockchain-network-test
+    command: ["bun", "test"]
+
+networks:
+  blockchain-network-test:
+    driver: bridge

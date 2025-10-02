@@ -1,13 +1,13 @@
 services:
   db:
     image: postgres:15
-    container_name: blockchain-indexer-db
+    container_name: blockchain-indexer-db-dev
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-myuser}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
       POSTGRES_DB: ${POSTGRES_DB:-mydatabase}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data_dev:/var/lib/postgresql/data
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -16,44 +16,50 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - blockchain-network
+      - blockchain-network-dev
 
   api:
-    build: .
-    container_name: blockchain-indexer-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blockchain-indexer-api-dev
     depends_on:
       db:
         condition: service_healthy
     environment:
       # Database Configuration
       DATABASE_URL: postgres://${POSTGRES_USER:-myuser}:${POSTGRES_PASSWORD:-mypassword}@db:5432/${POSTGRES_DB:-mydatabase}
-      DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-50}
+      DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-20}
       DATABASE_IDLE_TIMEOUT_MS: ${DATABASE_IDLE_TIMEOUT_MS:-30000}
       DATABASE_CONNECTION_TIMEOUT_MS: ${DATABASE_CONNECTION_TIMEOUT_MS:-5000}
 
       # Server Configuration
-      NODE_ENV: ${NODE_ENV:-production}
+      NODE_ENV: development
       PORT: ${PORT:-3000}
       HOST: ${HOST:-0.0.0.0}
 
       # CORS Configuration
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
 
-      # Rate Limiting
-      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      # Rate Limiting (relaxed for development)
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-1000}
       RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-900000}
 
       # Blockchain Configuration
       MAX_ROLLBACK_BLOCKS: ${MAX_ROLLBACK_BLOCKS:-2000}
     ports:
       - "${PORT:-3000}:${PORT:-3000}"
+    volumes:
+      # Mount source code for hot reloading
+      - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
     networks:
-      - blockchain-network
+      - blockchain-network-dev
     restart: unless-stopped
 
 volumes:
-  db_data:
+  db_data_dev:
 
 networks:
-  blockchain-network:
+  blockchain-network-dev:
     driver: bridge

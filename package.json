@@ -4,24 +4,69 @@
   "type": "module",
   "scripts": {
     "start": "bun src/index.ts",
-    "start:dev": "NODE_ENV=development bun src/index.ts",
-    "start:test": "NODE_ENV=test bun src/index.ts",
-    "start:prod": "NODE_ENV=production bun src/index.ts",
     "run-docker": "docker-compose up -d --build",
-    "test": "NODE_ENV=test bun test",
-    "test:unit": "NODE_ENV=test bun test spec/validation.spec.ts",
-    "test:blockchain": "NODE_ENV=test bun test spec/blockchain.spec.ts"
+    "seed": "bun run src/seed.ts",
+    "seed-with-env": "DATABASE_URL=postgres://myuser:mypassword@localhost:5432/mydatabase bun run src/seed.ts",
+    "test": "npm run test:db:setup && bun --env-file=.test.env test spec/ --timeout 60000 && npm run test:nuke",
+    "test:db:setup": "./scripts/setup-test-db.sh setup",
+    "test:db:reset": "./scripts/setup-test-db.sh reset",
+    "test:db:drop": "./scripts/setup-test-db.sh clean",
+    "test:cleanup": "./scripts/cleanup-tests.sh",
+    "test:nuke": "npm run test:cleanup && npm run test:db:drop",
+    "test:unit": "bun test spec/utils.spec.ts --timeout 10000",
+    "test:db": "npm run test:db:setup && bun --env-file=.test.env test spec/index.spec.ts --timeout 30000 && npm run test:nuke",
+    "test:api": "npm run test:db:setup && bun --env-file=.test.env test spec/api.spec.ts --timeout 60000 && npm run test:nuke",
+    "test:ci": "docker-compose -f docker-compose.test.yaml up -d test-db && sleep 5 && bun --env-file=.test.env test spec/ --timeout 60000",
+    "test:full": "./scripts/run-tests.sh",
+    "test:quick": "./scripts/test-quick.sh",
+    "test:core": "./scripts/test-core.sh",
+    "docker:dblogs": "docker-compose logs db",
+    "lint": "eslint src/ spec/ --ext .ts",
+    "lint:fix": "eslint src/ spec/ --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"spec/**/*.ts\" \"*.{js,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"spec/**/*.ts\" \"*.{js,json,md}\"",
+    "code:check": "npm run lint && npm run format:check",
+    "code:fix": "npm run lint:fix && npm run format",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/pg": "^8.11.8"
+    "@types/cors": "^2.8.19",
+    "@types/pg": "^8.11.8",
+    "@types/prettier": "^2.7.3",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
+    "pino-pretty": "^13.1.1",
+    "prettier": "^3.6.2"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "fastify": "^4.28.1",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/rate-limit": "^10.3.0",
+    "@types/morgan": "^1.9.10",
+    "fastify": "^5.6.1",
+    "morgan": "^1.10.1",
     "pg": "^8.12.0",
-    "zod": "^4.1.11"
+    "zod": "^4.1.9"
   }
 }
