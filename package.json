@@ -4,7 +4,13 @@
   "type": "module",
   "scripts": {
     "start": "bun src/index.ts",
-    "run-docker": "docker-compose up -d --build"
+    "start:dev": "NODE_ENV=development bun src/index.ts",
+    "start:test": "NODE_ENV=test bun src/index.ts",
+    "start:prod": "NODE_ENV=production bun src/index.ts",
+    "run-docker": "docker-compose up -d --build",
+    "test": "NODE_ENV=test bun test",
+    "test:unit": "NODE_ENV=test bun test spec/validation.spec.ts",
+    "test:blockchain": "NODE_ENV=test bun test spec/blockchain.spec.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -17,7 +17,16 @@ services:
     depends_on:
       - db
     environment:
+      NODE_ENV: development
       DATABASE_URL: postgres://myuser:mypassword@db:5432/mydatabase
+      DATABASE_POOL_MAX: 20
+      DATABASE_IDLE_TIMEOUT_MS: 30000
+      DATABASE_CONNECTION_TIMEOUT_MS: 2000
+      PORT: 3000
+      HOST: 0.0.0.0
+      LOG_LEVEL: info
+      BODY_LIMIT_MB: 10
+      REQUEST_TIMEOUT_MS: 30000
     ports:
       - "3000:3000"
 

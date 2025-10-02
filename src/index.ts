@@ -6,26 +6,28 @@ import { BlockchainService } from './services/blockchain';
 import { registerBlockRoutes } from './routes/blocks';
 import { registerBalanceRoutes } from './routes/balance';
 import { registerRollbackRoutes } from './routes/rollback';
+import { loadEnv } from './config/env';
+
+// Load and validate environment variables
+const env = loadEnv();
 
 const fastify = Fastify({
-  logger: true,
-  bodyLimit: 10485760, // 10MB limit for large block payloads
+  logger: {
+    level: env.LOG_LEVEL,
+  },
+  bodyLimit: env.BODY_LIMIT_MB * 1024 * 1024, // Convert MB to bytes
+  requestTimeout: env.REQUEST_TIMEOUT_MS,
 });
 
 async function bootstrap() {
-  fastify.log.info('Bootstrapping application...');
-
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
-    throw new Error('DATABASE_URL environment variable is required');
-  }
+  fastify.log.info(`Bootstrapping application in ${env.NODE_ENV} mode...`);
 
   // Initialize database connection pool
   const pool = new Pool({
-    connectionString: databaseUrl,
-    max: 20,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionString: env.DATABASE_URL,
+    max: env.DATABASE_POOL_MAX,
+    idleTimeoutMillis: env.DATABASE_IDLE_TIMEOUT_MS,
+    connectionTimeoutMillis: env.DATABASE_CONNECTION_TIMEOUT_MS,
   });
 
   // Test database connection
@@ -75,10 +77,10 @@ async function bootstrap() {
 try {
   const app = await bootstrap();
   await app.listen({
-    port: 3000,
-    host: '0.0.0.0',
+    port: env.PORT,
+    host: env.HOST,
   });
-  app.log.info('Server listening on http://0.0.0.0:3000');
+  app.log.info(`Server listening on http://${env.HOST}:${env.PORT}`);
 } catch (err) {
   console.error('Failed to start application:', err);
   process.exit(1);
