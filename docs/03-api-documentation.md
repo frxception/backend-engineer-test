@@ -73,7 +73,6 @@ Returns the health status of the API and available endpoints.
   "endpoints": [
     "POST /api/blocks - Process a new block",
     "GET /api/balance/:address - Get address balance",
-    "GET /api/getAllBlocks - Get all blocks",
     "POST /api/rollback - Rollback to specific height"
   ],
   "status": "healthy",
@@ -165,30 +164,7 @@ Retrieves the current balance for a specific address.
 
 ---
 
-### 4. Get All Blocks
-
-**GET /api/getAllBlocks**
-
-Retrieves all blocks in the blockchain.
-
-#### Response (200 OK)
-
-```json
-{
-  "blocks": [
-    {
-      "id": "block_id",
-      "height": 1,
-      "created_at": "2024-01-01T00:00:00.000Z"
-    }
-  ],
-  "count": 1
-}
-```
-
----
-
-### 5. Rollback Blockchain
+### 4. Rollback Blockchain
 
 **POST /api/rollback?height={height}**
 
@@ -442,8 +418,7 @@ curl -X POST http://localhost:3000/api/blocks \
 # Check balance
 curl http://localhost:3000/api/balance/addr1
 
-# Get all blocks
-curl http://localhost:3000/api/getAllBlocks
+
 
 # Rollback
 curl -X POST "http://localhost:3000/api/rollback?height=1"

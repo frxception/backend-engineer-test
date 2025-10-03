@@ -27,7 +27,7 @@ The challenge requires building an indexer that:
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        API Gateway Layer                           │
 ├─────────────────────────────────────────────────────────────────────┤
-│  • Express.js Application Server                                   │
+│  • Fastify Application Server                                   │
 │  • Rate Limiting & Security Middleware                             │
 │  • Request Validation & Error Handling                             │
 │  • CORS & Security Headers                                         │
@@ -82,7 +82,7 @@ The challenge requires building an indexer that:
 
 ### 1. API Gateway Layer
 
-- **Express.js Server**: Handles HTTP requests and responses
+- **Fastify Server**: Handles HTTP requests and responses
 - **Security Middleware**: Rate limiting, CORS, security headers (Helmet)
 - **Validation Middleware**: Zod schema validation for incoming requests
 - **Error Handling**: Centralized error processing and response formatting

@@ -68,8 +68,6 @@ Deployment strategies, testing frameworks, and operational procedures.
 
 ### 🚀 [07 - Fastify Migration](./07-fastify-migration.md)
 
-Comprehensive documentation of the Express.js to Fastify migration process.
-
 **Key Topics:**
 
 - Migration strategy and phases
@@ -108,7 +106,7 @@ The challenge implements a blockchain indexer with the following requirements:
 ### Technology Stack
 
 - **Runtime**: Bun (fast JavaScript runtime)
-- **Framework**: Fastify 5.x with TypeScript (migrated from Express.js)
+- **Framework**: Fastify 5.x with TypeScript
 - **Database**: PostgreSQL 15 with ACID transactions
 - **Validation**: Zod 4.x for schema validation
 - **Testing**: Bun built-in test runner with comprehensive coverage

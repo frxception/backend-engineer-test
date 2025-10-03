@@ -8,7 +8,6 @@ export class FastifyHealthController {
       endpoints: [
         'POST /blocks - Process a new block',
         'GET /balance/:address - Get address balance',
-        'GET /getAllBlocks - Get all blocks',
         'POST /rollback - Rollback to specific height'
       ],
       status: 'healthy',

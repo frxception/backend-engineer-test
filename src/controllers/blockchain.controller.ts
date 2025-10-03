@@ -78,21 +78,21 @@ export class FastifyBlockchainController {
     }
   }
 
-  async getAllBlocks(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    try {
-      const blocks = await this.blockchainService.getAllBlocks();
-
-      return reply.status(200).send({
-        blocks,
-        count: blocks.length
-      });
-    } catch {
-      const err = new Error('Failed to get blocks');
-      (err as any).statusCode = 500;
-      (err as any).code = 'INTERNAL_ERROR';
-      throw err;
-    }
-  }
+  // async getAllBlocks(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  //   try {
+  //     const blocks = await this.blockchainService.getAllBlocks();
+  //
+  //     return reply.status(200).send({
+  //       blocks,
+  //       count: blocks.length
+  //     });
+  //   } catch {
+  //     const err = new Error('Failed to get blocks');
+  //     (err as any).statusCode = 500;
+  //     (err as any).code = 'INTERNAL_ERROR';
+  //     throw err;
+  //   }
+  // }
 
   async rollback(
     request: FastifyRequest<{

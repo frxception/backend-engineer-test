@@ -363,7 +363,7 @@ describe('API Integration Tests', () => {
 
 - Spawns actual server process for true E2E testing
 - Uses isolated test database (port 5433)
-- Tests all endpoints: POST /api/blocks, GET /api/balance, POST /api/rollback, GET /api/getAllBlocks
+- Tests all endpoints: POST /api/blocks, GET /api/balance, POST /api/rollback
 - Automatic cleanup after each test
   }
   });

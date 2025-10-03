@@ -291,64 +291,64 @@ describe('API Integration Tests', () => {
     });
   });
 
-  describe('GET /getAllBlocks', () => {
-    test('returns empty array when no blocks exist', async () => {
-      const response = await makeRequest('GET', '/api/getAllBlocks');
-      expect(response.status).toBe(200);
-
-      const result = await parseResponse(response);
-      expect(Array.isArray(result.blocks)).toBe(true);
-      expect(result.blocks.length).toBe(0);
-      expect(result.count).toBe(0);
-    });
-
-    test('returns all blocks after processing some blocks', async () => {
-      // Create first block
-      const tx1: Transaction = {
-        id: 'tx1',
-        inputs: [],
-        outputs: [{ address: 'addr1', value: 100 }]
-      };
-
-      const block1: Block = {
-        id: calculateBlockId(1, [tx1]),
-        height: 1,
-        transactions: [tx1]
-      };
-
-      await makeRequest('POST', '/api/blocks', block1);
-
-      // Create second block
-      const tx2: Transaction = {
-        id: 'tx2',
-        inputs: [{ txId: 'tx1', index: 0 }],
-        outputs: [{ address: 'addr2', value: 100 }]
-      };
-
-      const block2: Block = {
-        id: calculateBlockId(2, [tx2]),
-        height: 2,
-        transactions: [tx2]
-      };
-
-      await makeRequest('POST', '/api/blocks', block2);
-
-      // Get all blocks
-      const response = await makeRequest('GET', '/api/getAllBlocks');
-      expect(response.status).toBe(200);
-
-      const result = await parseResponse(response);
-      expect(Array.isArray(result.blocks)).toBe(true);
-      expect(result.blocks.length).toBe(2);
-      expect(result.count).toBe(2);
-
-      // Verify blocks are ordered by height
-      expect(result.blocks[0].height).toBe(1);
-      expect(result.blocks[1].height).toBe(2);
-      expect(result.blocks[0].id).toBe(block1.id);
-      expect(result.blocks[1].id).toBe(block2.id);
-    });
-  });
+  // describe('GET /getAllBlocks', () => {
+  //   test('returns empty array when no blocks exist', async () => {
+  //     const response = await makeRequest('GET', '/api/getAllBlocks');
+  //     expect(response.status).toBe(200);
+  //
+  //     const result = await parseResponse(response);
+  //     expect(Array.isArray(result.blocks)).toBe(true);
+  //     expect(result.blocks.length).toBe(0);
+  //     expect(result.count).toBe(0);
+  //   });
+  //
+  //   test('returns all blocks after processing some blocks', async () => {
+  //     // Create first block
+  //     const tx1: Transaction = {
+  //       id: 'tx1',
+  //       inputs: [],
+  //       outputs: [{ address: 'addr1', value: 100 }]
+  //     };
+  //
+  //     const block1: Block = {
+  //       id: calculateBlockId(1, [tx1]),
+  //       height: 1,
+  //       transactions: [tx1]
+  //     };
+  //
+  //     await makeRequest('POST', '/api/blocks', block1);
+  //
+  //     // Create second block
+  //     const tx2: Transaction = {
+  //       id: 'tx2',
+  //       inputs: [{ txId: 'tx1', index: 0 }],
+  //       outputs: [{ address: 'addr2', value: 100 }]
+  //     };
+  //
+  //     const block2: Block = {
+  //       id: calculateBlockId(2, [tx2]),
+  //       height: 2,
+  //       transactions: [tx2]
+  //     };
+  //
+  //     await makeRequest('POST', '/api/blocks', block2);
+  //
+  //     // Get all blocks
+  //     const response = await makeRequest('GET', '/api/getAllBlocks');
+  //     expect(response.status).toBe(200);
+  //
+  //     const result = await parseResponse(response);
+  //     expect(Array.isArray(result.blocks)).toBe(true);
+  //     expect(result.blocks.length).toBe(2);
+  //     expect(result.count).toBe(2);
+  //
+  //     // Verify blocks are ordered by height
+  //     expect(result.blocks[0].height).toBe(1);
+  //     expect(result.blocks[1].height).toBe(2);
+  //     expect(result.blocks[0].id).toBe(block1.id);
+  //     expect(result.blocks[1].id).toBe(block2.id);
+  //   });
+  // });
 
   describe('GET /', () => {
     test('returns API information', async () => {

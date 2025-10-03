@@ -80,12 +80,12 @@ export class BlockModel {
     }
   }
 
-  async getAllBlocks(): Promise<BlockRecord[]> {
-    const result = await this.pool.query(`
-      SELECT * FROM blocks ORDER BY height ASC;
-    `);
-    return result.rows;
-  }
+  // async getAllBlocks(): Promise<BlockRecord[]> {
+  //   const result = await this.pool.query(`
+  //     SELECT * FROM blocks ORDER BY height ASC;
+  //   `);
+  //   return result.rows;
+  // }
 
   async rollbackToHeight(targetHeight: number): Promise<void> {
     const client = await this.pool.connect();

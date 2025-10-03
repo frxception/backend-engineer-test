@@ -38,9 +38,9 @@ export class BlockchainService {
     return await this.dbService.outputs.getAddressBalance(address);
   }
 
-  async getAllBlocks() {
-    return await this.dbService.blocks.getAllBlocks();
-  }
+  // async getAllBlocks() {
+  //   return await this.dbService.blocks.getAllBlocks();
+  // }
 
   async rollbackToHeight(
     targetHeight: number

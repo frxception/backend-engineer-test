@@ -34,7 +34,6 @@ export default [
       quotes: ['error', 'single', { avoidEscape: true }],
       'no-unused-vars': 'off', // Turned off for TypeScript files
 
-      // Express/Node.js specific rules
       'no-process-exit': 'off', // Allow process.exit in server code
       'no-sync': 'off' // Allow sync methods when needed
     }
@@ -71,7 +70,6 @@ export default [
       quotes: ['error', 'single', { avoidEscape: true }],
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
-      // Express/Node.js specific rules
       'no-process-exit': 'off', // Allow process.exit in server code
       'no-sync': 'off' // Allow sync methods when needed
     }

@@ -30,9 +30,9 @@ const blockchainRoutes: FastifyPluginAsync = async fastify => {
   });
 
   // GET /getAllBlocks - Get all blocks from database
-  fastify.get('/getAllBlocks', {
-    handler: controller.getAllBlocks.bind(controller)
-  });
+  // fastify.get('/getAllBlocks', {
+  //   handler: controller.getAllBlocks.bind(controller)
+  // });
 
   // POST /rollback - Rollback to specific height
   fastify.post<{
