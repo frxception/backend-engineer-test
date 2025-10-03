@@ -32,7 +32,7 @@ export async function createApp(): Promise<FastifyInstance> {
     }
   });
 
-  // Register security plugins
+  // Register security plugins (this is like the middleware part of the api)
   await app.register(import('@fastify/helmet'), {
     global: true
   });
