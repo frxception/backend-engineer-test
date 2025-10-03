@@ -100,11 +100,16 @@ describe('API Integration Tests', () => {
         height: 1,
         transactions
       };
-      console.log('>>>> accepts valid block request block: ', JSON.stringify(block, null, 2));
       const response = await makeRequest('POST', '/api/blocks', block);
       expect(response.status).toBe(200);
 
       const result = await parseResponse(response);
+      console.log('>>>> [POST /blocks] accepts valid block request block: ', {
+        block: JSON.stringify(block, null, 2),
+        result: JSON.stringify(result, null, 2),
+        response: JSON.stringify(response, null, 2)
+      });
+
       expect(result.message).toBe('Block processed successfully');
       expect(result.blockId).toBe(block.id);
       expect(result.height).toBe(1);
@@ -127,6 +132,10 @@ describe('API Integration Tests', () => {
       console.log('>>>> rejects block with invalid height block: ', JSON.stringify(block, null, 2));
 
       const response = await makeRequest('POST', '/api/blocks', block);
+      console.log('>>>> [POST /blocks] rejects block with invalid height block: ', {
+        block: JSON.stringify(block, null, 2),
+        response: JSON.stringify(response, null, 2)
+      });
       expect(response.status).toBe(400);
 
       const result = await parseResponse(response);
@@ -242,14 +251,16 @@ describe('API Integration Tests', () => {
       // Perform rollback
       const response = await makeRequest('POST', '/api/rollback?height=1');
 
-      console.log('>>>> rollback: ', {
-        block1: JSON.stringify(block1, null, 2),
-        block2: JSON.stringify(block2, null, 2)
-      });
-
       expect(response.status).toBe(200);
 
       const result = await parseResponse(response);
+
+      console.log('>>>> [POST /rollback] performs rollback successfully: ', {
+        block1: JSON.stringify(block1, null, 2),
+        block2: JSON.stringify(block2, null, 2),
+        result: JSON.stringify(result, null, 2),
+        response: JSON.stringify(response, null, 2)
+      });
       expect(result.message).toBe('Rollback completed successfully');
       expect(result.targetHeight).toBe(1);
       expect(result.previousHeight).toBe(2);
