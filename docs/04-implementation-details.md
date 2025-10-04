@@ -297,6 +297,135 @@ if (hasCoinbaseTransaction) {
 - Follows Bitcoin UTXO model
 - Essential for the first block (genesis block)
 
+> #### Information:
+>
+> > #### **What is a Coinbase Transaction?**
+> >
+> > In simple terms, a coinbase transaction is a special transaction that creates new coins
+> > "out of thin air" - it has no inputs, only outputs.
+
+> **Think of it like this:**
+
+- Regular transaction: "I'm sending you \$10 from the \$50 I already have" (has inputs +
+  outputs)
+- Coinbase transaction: "Here's $10 that just appeared" (only outputs, no inputs)
+
+> #### Real-World Examples
+
+**Bitcoin**
+
+- Miners create a coinbase transaction when they successfully mine a block
+- This is how new Bitcoin enters circulation (block reward)
+- Example: Miner creates 6.25 BTC out of nothing as a reward
+
+> **Your Blockchain**
+
+In the seed data, coinbase-like transactions appear in every block (tx5, tx8, tx11,
+tx14, tx17):
+
+```js
+// Block 2, Transaction 5 (coinbase-like)
+transactions.push({
+  id: this.generateTxId(),
+  inputs: [], // <-- NO INPUTS!
+  outputs: [{ address: this.generateAddress(), value: 100 }] // Creates 100 units
+});
+```
+
+> **Why Mix Regular + Coinbase Transactions?**
+
+The implementation mixes both types in each block to simulate a realistic blockchain:
+
+Block Structure Pattern (Blocks 2-6)
+
+**Each block contains:**
+
+1. Transaction 1: Spends previous outputs (regular)
+2. Transaction 2: Spends different outputs (regular)
+3. Transaction 3: Coinbase - creates 100 new units (no inputs)
+
+```
+  Block 2:
+  ├─ tx3: Spends tx1[0] + tx1[1] → Creates addr6, addr7 (REGULAR)
+  ├─ tx4: Spends tx1[2]         → Creates addr8, addr9, addr10 (REGULAR)
+  └─ tx5: No inputs             → Creates addr11 with 100 (COINBASE)
+```
+
+> **Why This Design?**
+
+1. **Testing Flexibility**
+
+- Coinbase transactions ensure you always have new unspent outputs
+- Without them, you'd eventually run out of UTXOs to spend
+- Enables continuous blockchain growth in tests
+
+2. **Realistic Blockchain Behavior**
+
+- Real blockchains have both:
+  - User transactions (spending existing coins)
+  - Block rewards (minting new coins)
+- This mirrors Bitcoin/Ethereum structure
+
+3. **UTXO Pool Management**
+
+```
+  // After a few blocks, you might spend all UTXOs
+  // Coinbase ensures fresh UTXOs for next blocks
+  Block 3: Spends all outputs from Block 1 ❌ (would run out)
+  Block 3: Spends some + adds coinbase ✅ (sustainable)
+```
+
+**Code Evidence**
+
+> src/seed.ts
+
+```js
+// Add a coinbase-like transaction (no inputs)
+transactions.push({
+  id: this.generateTxId(),
+  inputs: [], // <-- This makes it coinbase
+  outputs: [{ address: this.generateAddress(), value: 100 }]
+});
+```
+
+The comment explicitly calls it "coinbase-like" because:
+
+- It creates new value without consuming existing outputs
+- It has no inputs (can't validate against previous UTXOs)
+
+> **Validation Difference**
+
+The blockchain service handles coinbase differently:
+
+**Regular Transaction Validation (src/services/blockchain.service.ts):**
+
+- ✅ Must have inputs that reference valid UTXOs
+- ✅ Input sum must equal output sum
+
+**Coinbase Transaction Validation:**
+
+- ✅ Can have zero inputs (inputs.length === 0)
+- ✅ Doesn't need UTXO validation (line 153-155 in blockchain.service.ts)
+
+```js
+// Line 153-155
+if (inputs.length === 0) {
+  return { isValid: true, totalInputValue: 0 }; // Coinbase allowed!
+}
+```
+
+> **Summary**
+>
+> Coinbase transactions create new coins from nothing (mining rewards). They're mixed
+> with regular transactions to:
+>
+> > 1.  Simulate real blockchain behavior (rewards + user transfers)
+> > 2.  Keep a steady supply of spendable UTXOs for testing
+> > 3.  Allow the blockchain to grow indefinitely without running out of coins
+>
+> _Without coinbase transactions, your test blockchain would eventually spend all its
+> UTXOs and couldn't create new blocks!_
+
 ### 3. Mixed Transaction Blocks
 
 ```typescript
