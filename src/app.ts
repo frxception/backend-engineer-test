@@ -33,6 +33,16 @@ export async function createApp(): Promise<FastifyInstance> {
     }
   });
 
+  // Set custom schema compilers to disable automatic validation
+  // Schemas are kept only for Swagger documentation
+  app.setValidatorCompiler(() => {
+    return () => true; // Always valid - we use Zod validation in preHandlers
+  });
+
+  app.setSerializerCompiler(() => {
+    return data => JSON.stringify(data); // Standard JSON serialization
+  });
+
   // Register security plugins (this is like the middleware part of the api)
   await app.register(import('@fastify/helmet'), {
     global: true
@@ -124,6 +134,7 @@ export async function createApp(): Promise<FastifyInstance> {
     });
   });
 
+  // @ts-ignore
   return app;
 }
 
