@@ -2,6 +2,7 @@ import fastify, { FastifyInstance } from 'fastify';
 import { DatabaseConfig } from './config/database.config.ts';
 import { DatabaseService } from './models';
 import { AppConfig } from './config/app.config.ts';
+import { swaggerOptions, swaggerUiOptions } from './config/swagger.config.ts';
 
 // Check if pino-pretty is available (dev dependency)
 function getPinoTransport() {
@@ -91,6 +92,12 @@ export async function createApp(): Promise<FastifyInstance> {
     await pool.end();
     console.log('Database connection pool closed');
   });
+
+  // Register Swagger for API documentation (must be before routes)
+  if (process.env.NODE_ENV !== 'test') {
+    await app.register(import('@fastify/swagger'), swaggerOptions);
+    await app.register(import('@fastify/swagger-ui'), swaggerUiOptions);
+  }
 
   // Register routes
   await app.register(import('./routes/index'), { prefix: '/' });

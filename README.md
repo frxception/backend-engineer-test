@@ -31,6 +31,22 @@ or using `Bun`
 bun run-docker
 ```
 
+## API Documentation
+
+The API is fully documented using **Swagger/OpenAPI 3.0**. Once the application is running, you can access the interactive API documentation at:
+
+**Swagger UI**: http://localhost:3000/docs
+
+The Swagger documentation includes:
+
+- Complete API endpoint specifications
+- Request/response schemas with examples
+- Sample payloads for all endpoints
+- Edge case examples (validation errors, double spending, etc.)
+- Interactive "Try it out" feature to test endpoints directly
+
+**OpenAPI JSON**: http://localhost:3000/docs/json
+
 ## The Challenge
 
 Your job is to create an indexer that will keep track of the current balance for each address. To do that, you will need to implement the following endpoints:

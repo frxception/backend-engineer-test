@@ -3,6 +3,7 @@ import { FastifyBlockchainController } from '../controllers/blockchain.controlle
 import { ProcessBlockRequestSchema, GetBalanceParamsSchema } from '../schemas/blockchain.schema.ts';
 import { createValidationHook, validateRollbackQuery } from '../plugins/validation.plugin.ts';
 import { BlockchainService } from '../services/blockchain.service.ts';
+import { swaggerRouteSchemas } from '../config/swagger.config.ts';
 
 const blockchainRoutes: FastifyPluginAsync = async fastify => {
   // Create blockchain controller instance
@@ -11,6 +12,7 @@ const blockchainRoutes: FastifyPluginAsync = async fastify => {
 
   // POST /blocks - Process a new block
   fastify.post('/blocks', {
+    schema: swaggerRouteSchemas.postBlocks,
     preHandler: createValidationHook({
       body: ProcessBlockRequestSchema
     }),
@@ -23,6 +25,7 @@ const blockchainRoutes: FastifyPluginAsync = async fastify => {
     Querystring: any;
     Params: { address: string };
   }>('/balance/:address', {
+    schema: swaggerRouteSchemas.getBalanceAddress,
     preHandler: createValidationHook({
       params: GetBalanceParamsSchema
     }),
@@ -38,6 +41,7 @@ const blockchainRoutes: FastifyPluginAsync = async fastify => {
   fastify.post<{
     Querystring: { height: number };
   }>('/rollback', {
+    schema: swaggerRouteSchemas.postRollback,
     preHandler: validateRollbackQuery,
     handler: controller.rollback.bind(controller)
   });
