@@ -16,67 +16,7 @@ The challenge requires building an indexer that:
 
 ## High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                           Client Layer                              │
-├─────────────────────────────────────────────────────────────────────┤
-│  HTTP Requests (POST /blocks, GET /balance/:address, POST /rollback) │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        API Gateway Layer                           │
-├─────────────────────────────────────────────────────────────────────┤
-│  • Fastify Application Server                                   │
-│  • Rate Limiting & Security Middleware                             │
-│  • Request Validation & Error Handling                             │
-│  • CORS & Security Headers                                         │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      Business Logic Layer                          │
-├─────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────┐    ┌──────────────────┐   ┌─────────────────┐ │
-│  │ BlockchainController │   │ BlockchainService │   │ Validation Utils │ │
-│  │ • HTTP Handlers  │    │ • Block Processing│   │ • Block Validation│ │
-│  │ • Error Mapping  │    │ • Balance Queries │   │ • Hash Verification│ │
-│  │ • Response Format│    │ • Rollback Logic  │   │ • Input/Output Sum│ │
-│  └─────────────────┘    └──────────────────┘   └─────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       Data Access Layer                            │
-├─────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │ Block Model │  │Transaction  │  │Output Model │  │Balance Model│ │
-│  │ • CRUD Ops  │  │ Model       │  │ • Address   │  │ • Real-time │ │
-│  │ • Height    │  │ • Input     │  │   Tracking  │  │   Balance   │ │
-│  │   Tracking  │  │   Validation│  │ • Spend     │  │   Queries   │ │
-│  │ • Rollback  │  │ • References│  │   Status    │  │ • Indexing  │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        Storage Layer                               │
-├─────────────────────────────────────────────────────────────────────┤
-│                         PostgreSQL Database                        │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │   blocks    │  │transactions │  │   outputs   │  │address_     │ │
-│  │   table     │  │   table     │  │   table     │  │ balances    │ │
-│  │             │  │             │  │             │  │  table      │ │
-│  │ • id        │  │ • id        │  │ • id        │  │ • address   │ │
-│  │ • height    │  │ • block_id  │  │ • tx_id     │  │ • balance   │ │
-│  │ • created_at│  │ • tx_id     │  │ • index     │  │ • updated_at│ │
-│  │             │  │ • created_at│  │ • address   │  │             │ │
-│  │             │  │             │  │ • value     │  │             │ │
-│  │             │  │             │  │ • is_spent  │  │             │ │
-│  │             │  │             │  │ • created_at│  │             │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-```
+See more about the [layer architecture](./02-architecture.md)
 
 ## Core Components
 

@@ -189,39 +189,6 @@ These diagrams are kept in sync with:
 
 ---
 
-## 🛠️ Creating New Diagrams
-
-When adding new features, update or create diagrams following this template:
-
-```markdown
-# Feature Name
-
-## Overview
-
-Brief description of what this diagram shows.
-
-## Visual Diagram
-
-\`\`\`mermaid
-graph TD
-A[Step 1] --> B[Step 2]
-\`\`\`
-
-## Example Data
-
-\`\`\`json
-{
-"example": "data"
-}
-\`\`\`
-
-## Explanation
-
-Detailed explanation of the flow.
-```
-
----
-
 ## 📝 Diagram Conventions
 
 ### Colors
@@ -239,24 +206,6 @@ Detailed explanation of the flow.
 - 🔄 Process
 - 📊 Data
 
-### Naming
-
-- Use `kebab-case` for file names
-- Use descriptive titles in headers
-- Keep diagram IDs consistent
-
----
-
-## 🤝 Contributing
-
-To add or update diagrams:
-
-1. Follow existing Mermaid syntax patterns
-2. Include example data where applicable
-3. Add clear explanations
-4. Test rendering in GitHub/VS Code
-5. Update this README with new diagram links
-
 ---
 
 ## 📚 Related Documentation
@@ -268,12 +217,3 @@ To add or update diagrams:
 - [Migrations](../../migrations/)
 
 ---
-
-## 📞 Support
-
-For questions about these diagrams:
-
-1. Check the diagram's explanation section
-2. Review related code in `src/`
-3. Run corresponding tests in `spec/`
-4. Refer to main documentation in `docs/`
